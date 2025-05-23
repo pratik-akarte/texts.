@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  background-image: url("../assets/abstract.png");
+  background-size: cover;
+  background-position: center;
+  font-family: "Outfit";
+  font-weight: 300;
+}
+.css-0 {
+  width: 100%;
+}
