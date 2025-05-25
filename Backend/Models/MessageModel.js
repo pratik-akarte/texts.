@@ -2,11 +2,20 @@ const mongoose = require("mongoose");
 
 const MessageModel = new mongoose.Schema(
   {
-    sender: { type: mongoose.Schema.Types.ObjectId, ref: User },
-    content: { type: String, trim: true },
-    chat: { type: mongoose.Schema.Types.ObjectId, ref: Chat },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    receiverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    text: { type: String, trim: true },
+    image: { type: String }
   },
   { timestamps: true }
 );
 
-module.exports = ("Message", MessageModel);
+module.exports = mongoose.model("Message", MessageModel);

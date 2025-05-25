@@ -3,7 +3,7 @@
 .app {
   min-height: 100vh;
   display: flex;
-  background-image: url("../assets/abstract.png");
+  /* background-image: url("../assets/abstract.png"); */
   background-size: cover;
   background-position: center;
   font-family: "Outfit";

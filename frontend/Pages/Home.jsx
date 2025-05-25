@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Box, Container, Text } from "@chakra-ui/react";
-import { For, SimpleGrid, Button } from "@chakra-ui/react";
+import { SimpleGrid, Button } from "@chakra-ui/react";
 import Login from "../src/components/Auth/Login";
 import Signup from "../src/components/Auth/Signup";
 
@@ -21,7 +21,7 @@ const Home = () => {
         p="5"
         m="40px 0 10px 0"
       >
-        <Text fontSize="4xl" fontWeight="bold" color="white" textAlign="center">
+        <Text fontSize="4xl" fontWeight="bold" color="gray.500" textAlign="center">
           Texts.
         </Text>
       </Box>
@@ -42,10 +42,6 @@ const Home = () => {
             p={"25px"}
             fontSize={"xl"}
             variant={activeTab === "tab1" ? "solid" : "outline"}
-            color="white"
-            _hover={{
-              color: activeTab !== "tab2" ? "gray.600" : "gray.500",
-            }}
             onClick={() => handleTabClick("tab1")}
           >
             Login
@@ -54,10 +50,6 @@ const Home = () => {
             p={"25px"}
             fontSize={"xl"}
             variant={activeTab === "tab2" ? "solid" : "outline"}
-            color="white"
-            _hover={{
-              color: activeTab !== "tab2" ? "gray.600" : "gray.500",
-            }}
             onClick={() => handleTabClick("tab2")}
           >
             Sign Up

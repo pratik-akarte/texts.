@@ -11,7 +11,7 @@ const Login = () => {
 
   const handleTogglePassword = () => setShow(!show);
   return (
-    <Box w="100%" maxW="400px" mx="auto">
+    <Box w="100%" maxW="400px" mx="auto" color={"black"}>
       <VStack spacing={4} width="100%" mt={5}>
         <FormControl isRequired>
           <FormLabel>Email ID</FormLabel>
@@ -19,7 +19,7 @@ const Login = () => {
             variant={"flushed"}
             placeholder="Enter your email id"
             onChange={(e) => setEmail(e.target.value)}
-            _placeholder={{ opacity: 1, color: "whiteAlpha.800" }}
+            _placeholder={{ opacity: 1, color: "gray.300" }}
           />
         </FormControl>
 
@@ -31,7 +31,7 @@ const Login = () => {
               type={show ? "text" : "password"}
               placeholder="Enter your password"
               onChange={(e) => setPassword(e.target.value)}
-              _placeholder={{ opacity: 1, color: "whiteAlpha.800" }}
+              _placeholder={{ opacity: 1, color: "gray.300" }}
             />
             <InputRightElement width="4.5rem">
               <Button
@@ -46,8 +46,10 @@ const Login = () => {
           </InputGroup>
         </FormControl>
 
-        <Button w={'100%'} mt={'20px'} >Submit</Button>
-        <Button w={'100%'} mt={'10px'} >Guest Login</Button>
+        <Button w={"100%"} mt={"20px"}>
+          Submit
+        </Button>
+        <Button w={"100%"}>Guest Login</Button>
       </VStack>
     </Box>
   );
