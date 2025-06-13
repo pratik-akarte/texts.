@@ -45,7 +45,7 @@ app.get("/api/chats/:id", (req, res) => {
   const singleChat = chats.find((c) => c?._id === req?.params?.id);
   res.send(singleChat);
 });
-if (process.env.NODE.ENV === "production") {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.get("*", (req, res) => {
