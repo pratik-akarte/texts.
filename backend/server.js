@@ -41,11 +41,6 @@ app.use(errorHandler);
 // That function returns true for the matching object
 // .find() then returns the first object where that function returns true
 
-app.get("/api/chats/:id", (req, res) => {
-  const singleChat = chats.find((c) => c?._id === req?.params?.id);
-  res.send(singleChat);
-});
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
