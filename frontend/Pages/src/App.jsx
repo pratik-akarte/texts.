@@ -1,26 +1,16 @@
-import { Routes, Route } from "react-router-dom";
-import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import "./App.css";
-import Home from "../Pages/Home";
-import ChatsPage from "../Pages/ChatsPage";
-import { useAuthStore } from "./../store/useAuthStore";
 
-import { Spinner } from "@chakra-ui/react";
-import { Loader } from "lucide-react";
-import Signup from "../Auth/Signup";
-import ProfilePage from "../Pages/ProfilePage";
+import { useAuthStore } from "../../store/useAuthStore";
 
 function App() {
-  const { authUser, isCheckingAuth, checkAuth, onlineUsers } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth(); // Call the function
   }, [checkAuth]);
 
-  console.log("authuser is: : " + " " + authUser?.name);
-
-  console.log({ onlineUsers });
+  console.log(authUser);
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -31,7 +21,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app ">
       <Routes>
         <Route
           path="/"
@@ -42,10 +32,11 @@ function App() {
           element={authUser ? <ChatsPage /> : <Navigate to="/" />}
         />
 
+        {/* <Route path="/settings" element={<SettingsPage />} />
         <Route
           path="/profile"
-          element={authUser ? <ProfilePage /> : <Navigate to="/" />}
-        />
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        /> */}
       </Routes>
     </div>
   );

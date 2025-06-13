@@ -1,0 +1,50 @@
+/* sidebar.css */
+
+.sidebar-contact-btn {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0.3rem;
+  margin: 10px auto 5px auto; /* center horizontally */
+  border-radius: 0.5em;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  text-align: left;
+  transition: background-color 0.4s ease;
+  background-color: rgba(0, 22, 21, 0.135); /* bg-zinc-800 */
+}
+
+/* For screens up to 768px */
+
+@media (max-width: 768px) {
+  .sidebar-contact-btn {
+    max-width: 70%;
+  }
+}
+@media (min-width: 769px) and (max-width: 1023px) {
+  .sidebar-contact-btn {
+    max-width: 70%; /* or whatever value you need */
+  }
+}
+
+/* For screens 1024px and up */
+@media (min-width: 1024px) {
+  .sidebar-contact-btn {
+    max-width: 92%;
+  }
+}
+
+.sidebar-contact-btn:hover {
+  background-color: #0084ff48; /* bg-purple-600 */
+}
+
+.sidebar-contact-btn.selected {
+  background-color: rgba(39, 150, 224, 0.477); /* bg-purple-600 */
+}
+
+.sidebar-contact-btn.selected:hover {
+  color: aliceblue;
+  background-color: rgba(4, 6, 126, 0.29); /* bg-purple-700 */
+}

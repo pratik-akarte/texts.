@@ -1,14 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import "tailwindcss";
 
 .app {
   min-height: 100vh;
-  display: flex;
   /* background-image: url("../assets/abstract.png"); */
   background-size: cover;
+
   background-position: center;
   font-family: "Outfit";
   font-weight: 300;
 }
-.css-0 {
-  width: 100%;
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

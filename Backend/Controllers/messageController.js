@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
+
 const User = require("../Models/UserModel.js");
 const Message = require("../Models/MessageModel.js");
+const { default: cloudinary } = require("../config/cloudinary.js");
+const { getReceiverSocketId, io } = require("./../config/socket.js");
 
 const getUsersForSidebar = asyncHandler(async (req, res) => {
   try {
@@ -46,27 +49,48 @@ const getMessages = asyncHandler(async (req, res) => {
 
 const sendMessage = asyncHandler(async (req, res) => {
   try {
-    const { text, image } = req.body;
+    const { text } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
+
+    let imageUrl;
+
+    // Check if file was uploaded (for form-data)
+    if (req.file) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
+          folder: "chat_images",
+        });
+        imageUrl = uploadResponse.secure_url;
+      } catch (error) {
+        console.error("Cloudinary upload failed:", error);
+        return res.status(500).json({ error: "Image upload failed" });
+      }
+    }
+    // Check if image URL was sent directly (for JSON)
+    else if (req.body.image) {
+      imageUrl = req.body.image;
+    }
 
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
-      image,
+      image: imageUrl,
     });
-
-    //  Saves the message to the MongoDB database.
-    // await ensures the operation completes before moving forward.
 
     await newMessage.save();
 
-    //todo : real functionality socket.io
+    ///realtime socket implementation
+    const SocketReceiverID = getReceiverSocketId(receiverId);
 
-    res.status(200).json(messages);
+    if (SocketReceiverID) {
+      io.to(SocketReceiverID).emit("newMessage", newMessage);
+    }
+
+    res.status(200).json(newMessage);
   } catch (error) {
-    console.error("Error in getMessages:" + error.message);
+    console.error("Error in sending message:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 });

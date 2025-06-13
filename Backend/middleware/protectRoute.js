@@ -1,9 +1,11 @@
-const { jwt } = require("jsonwebtoken");
-const { User } = require("../Models/UserModel.js");
+const jwt = require("jsonwebtoken");
+const User = require("../Models/UserModel.js");
 
 const protectRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
+
+    console.log(token);
 
     if (!token) {
       return res
@@ -12,6 +14,7 @@ const protectRoute = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
 
     if (!decoded) {
       return res
@@ -31,7 +34,7 @@ const protectRoute = async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.error("Error in logging out" + error.message);
+    console.error("Error in protectRoute middleware:" + err.message);
     res.status(500).json({ message: "Internal Protected Route Error" });
   }
 };

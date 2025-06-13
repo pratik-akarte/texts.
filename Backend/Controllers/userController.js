@@ -1,9 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../Models/UserModel.js");
 const generateToken = require("../config/generateToken.js");
+const cloudinary = require("../config/cloudinary.js");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
+
+  console.log(req.body);
 
   if (!name || !email || !password) {
     res.status(400);
@@ -32,6 +35,8 @@ const registerUser = asyncHandler(async (req, res) => {
       pic: newUser.pic,
       token: generateToken(newUser._id, res),
     });
+
+    await newUser.save();
   } else {
     res.status(400);
     throw new Error("Failed to create user");
@@ -53,11 +58,12 @@ const authUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
+    console.log("error in login ");
     throw new Error("Invalid email ID or Password");
   }
 });
 
-const logOutUser = asyncHandler((req, res) => {
+const logOutUser = asyncHandler(async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully" });
@@ -67,27 +73,41 @@ const logOutUser = asyncHandler((req, res) => {
   }
 });
 
-const updateProfile = asyncHandler((req, res) => {
-  try {
-    const { pic } = req.body;
-
-    const userId = req._id;
-
-    if (!pic) {
-      res.status(500).json({ message: "Profile pic require." });
-    }
-  } catch (error) {
-    console.error("Error in setting up profile picture." + error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-const CheckUser = asyncHandler((req, res) => {
+const CheckUser = asyncHandler(async (req, res) => {
   try {
     res.status(200).json(req.user);
   } catch (error) {
     console.error("Error in authenticating user" + error.message);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+const updateProfile = asyncHandler(async (req, res) => {
+  try {
+    const { pic } = req.body;
+    const userId = req.user._id;
+
+    if (!pic) {
+      return res.status(400).json({ message: "Profile pic is required" });
+    }
+
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(pic, {
+      folder: "profile_pictures",
+      resource_type: "auto",
+    });
+
+    // Update user in database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { pic: uploadResponse.secure_url },
+      { new: true }
+    ).select("-password"); // Exclude password from response
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error in updating profile picture:", error);
+    res.status(500).json({ message: error.message || "Internal Server Error" });
   }
 });
 

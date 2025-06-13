@@ -1,13 +1,15 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { chats } = require("./data/data");
-const connectDB = require("./config/db");
-const userRoutes = require("./routes/userRoutes");
-const messageRoutes = require("./routes/messageRoutes")
-const { errorHandler, notFound } = require("./Controllers/errorHandlers");
+const connectDB = require("./config/db.js");
+const userRoutes = require("./routes/userRoutes.js");
+const messageRoutes = require("./routes/messageRoutes.js");
+const { errorHandler, notFound } = require("./Controllers/errorHandlers.js");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const { app, server, io } = require("./config/socket.js");
+const { path } = require("path");
 
-const app = express();
 dotenv.config();
 connectDB();
 
@@ -15,13 +17,21 @@ app.use(express.json()); //to accept JSON responses as we will post user data fr
 
 app.use(cookieParser());
 
+app.use(
+  cors({
+    origin: "http://localhost:2703",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.get("/", (req, res) => {
   res.send("API running");
 });
 
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
-
 
 app.use(notFound);
 app.use(errorHandler);
@@ -35,6 +45,16 @@ app.get("/api/chats/:id", (req, res) => {
   const singleChat = chats.find((c) => c?._id === req?.params?.id);
   res.send(singleChat);
 });
+if (process.env.NODE.ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, console.log(`server listening on port ${PORT}`.yellow.bold));
+server.listen(
+  PORT,
+  console.log(`server listening on port ${PORT}`.yellow.bold)
+);
