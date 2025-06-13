@@ -8,7 +8,7 @@ const { errorHandler, notFound } = require("./Controllers/errorHandlers.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { app, server, io } = require("./config/socket.js");
-const { path } = require("path");
+const path = require("path");
 
 dotenv.config();
 connectDB();
@@ -45,11 +45,12 @@ app.get("/api/chats/:id", (req, res) => {
   const singleChat = chats.find((c) => c?._id === req?.params?.id);
   res.send(singleChat);
 });
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
   });
 }
 
