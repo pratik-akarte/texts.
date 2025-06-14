@@ -1,22 +1,27 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { chats } = require("./data/data");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+
 const connectDB = require("./config/db.js");
 const userRoutes = require("./routes/userRoutes.js");
 const messageRoutes = require("./routes/messageRoutes.js");
 const { errorHandler, notFound } = require("./Controllers/errorHandlers.js");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const { app, server, io } = require("./config/socket.js");
-const path = require("path");
 
+// Load env variables
 dotenv.config();
+
+// DB connection
 connectDB();
-const __dirname = path.resolve();
-app.use(express.json()); //to accept JSON responses as we will post user data from login page
 
+// Setup middlewares
+app.use(express.json()); // To parse JSON
 app.use(cookieParser());
-
+app.use(helmet()); // Secure HTTP headers
 app.use(
   cors({
     origin: "http://localhost:2703",
@@ -26,6 +31,11 @@ app.use(
   })
 );
 
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev")); // Logging in dev mode
+}
+
+// Routes
 app.get("/", (req, res) => {
   res.send("API running");
 });
@@ -33,6 +43,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
 
+// Error Handlers
 app.use(notFound);
 app.use(errorHandler);
 
@@ -41,16 +52,22 @@ app.use(errorHandler);
 // That function returns true for the matching object
 // .find() then returns the first object where that function returns true
 
+// Serve frontend in production
 if (process.env.NODE_ENV === "production") {
+  const __dirname = path.resolve();
+
+  // 1. Serve static files
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) => {
+  // 2. Catch-all route with proper regex syntax
+  app.get(/^\/(?!api).*/, (req, res) => {
+    // Match all routes except those starting with /api
     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
   });
 }
 
+// Start server
 const PORT = process.env.PORT || 5000;
-server.listen(
-  PORT,
-  console.log(`server listening on port ${PORT}`.yellow.bold)
-);
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`.yellow.bold);
+});

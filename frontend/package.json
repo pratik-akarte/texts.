@@ -23,6 +23,7 @@
     "react-icons": "^5.5.0",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.1.7",
+    "texts": "file:..",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
